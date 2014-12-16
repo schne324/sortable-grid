@@ -7,7 +7,7 @@ html
   body
     h1 Sortable Grid Demo
 
-    each ex in [{ heading: 'jQuery plugin', id: 'ex1' }, { heading: 'JavaScript component', id: 'ex2' }]
+    each ex in [{ heading: 'Basic JavaScript component', id: 'ex1' }, { heading: 'Wrapped as jQuery plugin', id: 'ex2' }]
 
       h2 #{ex.heading}
 
@@ -95,13 +95,13 @@ html
 
     script(src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js")
 
-    //- jQuery plugin version
-    script(src="sortable-grid.jquery.js")
-    script.
-      $('#ex1').sortableGrid();
-
     //- Component version
     script(src="sortable-grid.js")
     script.
-      var table = document.querySelector('#ex2');
+      var table = document.querySelector('#ex1');
       new SortableGrid(table);
+
+    //- jQuery plugin version
+    script(src="sortable-grid.jquery.js")
+    script.
+      $('#ex2').sortableGrid();

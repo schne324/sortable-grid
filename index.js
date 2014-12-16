@@ -8,6 +8,8 @@ var closest = require('component/closest');
 var classes = require('component/classes');
 var dataset = require('code42day/dataset');
 var empty = require('yields/empty');
+// Use 3.4.2 of ded/qwery for IE8 support
+var qwery = require('ded/qwery@v3.4.2');
 
 module.exports = SortableGrid;
 
@@ -27,9 +29,9 @@ function SortableGrid(el, opts) {
   opts = opts || {};
 
   this.el = el;
-  this.headers = [].slice.call(el.querySelectorAll('.sortable'));
-  this.tbody = el.querySelector('tbody');
-  this.rows = [].slice.call(this.tbody.querySelectorAll('tr'));
+  this.headers = qwery('.sortable', el);
+  this.tbody = qwery('tbody', el)[0];
+  this.rows = qwery('tr', this.tbody);
   this.events = events(this.el, this);
   this.events.bind('keydown .sortable', 'triggerClick');
   this.events.bind('click .sortable', 'sortCol');
@@ -69,7 +71,7 @@ SortableGrid.prototype.sortCol = function (e) {
   this.rows.forEach(function (tr) {
     var item = {};
     item.tr = tr;
-    var td = [].slice.call(tr.querySelectorAll('td'))[index];
+    var td = qwery('td', tr)[index];
     // TODO Allow user to configure what part of the cell
     //      is parsed for sorting.
     item.val = td.textContent; // IE9+
@@ -127,7 +129,7 @@ SortableGrid.prototype.sortCol = function (e) {
 
 SortableGrid.prototype.toggleOrder = function (th) {
   var state = 'descending';
-  var icon = th.querySelector('i');
+  var icon = qwery('i', th)[0];
   var iconClasses = classes(icon);
 
   // No sort -> Descending
@@ -147,7 +149,7 @@ SortableGrid.prototype.toggleOrder = function (th) {
   // Update all other col headers with the neutral sort icon
   this.headers.forEach(function (el) {
     if (el == th) return;
-    var icon = el.querySelector('i');
+    var icon = qwery('i', el)[0];
     if (!icon) return;
     classes(icon)
     .remove('fa-arrow-up')
