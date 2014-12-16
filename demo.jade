@@ -1,96 +1,107 @@
 doctype html
 html
   head
-    link(type='text/css', rel='stylesheet', href='styles.css')
+    link(rel='stylesheet' href='styles.css')
     title Sortable Grid Demo
+
   body
     h1 Sortable Grid Demo
-    table(id="serie-a")
-      thead
-        tr
-          th
-            span Rank
-            //- i.arrow-combo
-          th
-            span Team
-            //- i.arrow-combo
-          th
-            span Games Played
-            //- i.arrow-combo
-          th
-            span Wins
-            //- i.arrow-combo
-          th
-            span Draws
-            //- i.arrow-combo
-          th
-            span Losses
-            //- i.arrow-combo
-          th
-            span Goals For
-            //- i.arrow-combo
-          th
-            span Goals Against
-            //- i.arrow-combo
-          th
-            span Points
-            //- i.arrow-combo
-        tbody
+
+    each ex in [{ heading: 'jQuery plugin', id: 'ex1' }, { heading: 'JavaScript component', id: 'ex2' }]
+
+      h2 #{ex.heading}
+
+      table(id="#{ex.id}").example
+        thead
           tr
-            td 1
-            td Juventus
-            td 15
-            td 11
-            td 3
-            td 1
-            td 31
-            td 6
-            td 36
-          tr
-            td 2
-            td Roma
-            td 15
-            td 11
-            td 2
-            td 2
-            td 28
-            td 11
-            td 35
-          tr
-            td 3
-            td Lazio
-            td 15
-            td 8
-            td 2
-            td 5
-            td 26
-            td 17
-            td 26
-          tr
-            td 4
-            td Sampdoria
-            td 15
-            td 6
-            td 8
-            td 1
-            td 20
-            td 12
-            td 26
-          tr
-            td 5
-            td Genoa
-            td 15
-            td 7
-            td 5
-            td 3
-            td 20
-            td 13
-            td 26
+            th.sortable(data-sort="num")
+              span Rank
+              i.arrow-combo
+            th.sortable
+                span Team
+                i.arrow-combo
+            th.sortable(data-sort="num")
+                span Games Played
+                i.arrow-combo
+            th.sortable(data-sort="num")
+                span Wins
+                i.arrow-combo
+            th.sortable(data-sort="num")
+                span Draws
+                i.arrow-combo
+            th.sortable(data-sort="num")
+                span Losses
+                i.arrow-combo
+            th.sortable(data-sort="num")
+                span Goals For
+                i.arrow-combo
+            th.sortable(data-sort="num")
+                span Goals Against
+                i.arrow-combo
+            th.sortable(data-sort="num")
+                span Points
+                i.arrow-combo
+          tbody
+            tr
+              td 1
+              td Juventus
+              td 15
+              td 11
+              td 3
+              td 1
+              td 31
+              td 6
+              td 36
+            tr
+              td 2
+              td Roma
+              td 15
+              td 11
+              td 2
+              td 2
+              td 28
+              td 11
+              td 35
+            tr
+              td 3
+              td Lazio
+              td 15
+              td 8
+              td 2
+              td 5
+              td 26
+              td 17
+              td 26
+            tr
+              td 4
+              td Sampdoria
+              td 15
+              td 6
+              td 8
+              td 1
+              td 20
+              td 12
+              td 26
+            tr
+              td 5
+              td Genoa
+              td 15
+              td 7
+              td 5
+              td 3
+              td 20
+              td 13
+              td 26
+
     script(src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js")
+
+    //- jQuery plugin version
+    script(src="sortable-grid.jquery.js")
+    script.
+      $('#ex1').sortableGrid();
+
+    //- Component version
     script(src="sortable-grid.js")
     script.
-      $('#serie-a').sortableGrid({
-        neutralClass: 'neutralSort',
-        ascendClass: 'ascendSort',
-        descendClass: 'descendSort',
-      });
+      var table = document.querySelector('#ex2');
+      new SortableGrid(table);

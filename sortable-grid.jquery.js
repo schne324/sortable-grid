@@ -1,3 +1,5 @@
+$.fn.sortableGrid = function () {
+
 (function outer(modules, cache, entries){
 
   /**
@@ -899,3 +901,9 @@ module.exports = function(el, node){
 };
 
 }, {}]}, {}, {"1":"SortableGrid"})
+
+new SortableGrid(this[0]);
+
+return this;
+
+};

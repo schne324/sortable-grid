@@ -8,26 +8,26 @@
 }
 
 
-#serie-a {
+.example {
     width: 100%;
     border-collapse: collapse;
 }
 
-#serie-a th, #serie-a td {
+.example th, .example td {
     padding: 10px;
     border: 2px solid;
 }
-#serie-a th {
+.example th {
     background-color: #eee;
 }
 
-#serie-a i {
+.example i {
     font-family: 'entypo';
     font-style: normal;
     font-size: 25px;
     margin: 5px;
 }
 
-#serie-a i:after {
+.example i:after {
     content: '\E74F';
 }
