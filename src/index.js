@@ -11,6 +11,9 @@ var empty = require('yields/empty');
 // Use 3.4.2 of ded/qwery for IE8 support
 var qwery = require('ded/qwery@v3.4.2');
 
+var DESCENDING = 'descending';
+var ASCENDING = 'ascending';
+
 module.exports = SortableGrid;
 
 /**
@@ -32,10 +35,26 @@ function SortableGrid(el, opts) {
   this.headers = qwery('.sortable', el);
   this.tbody = qwery('tbody', el)[0];
   this.rows = qwery('tr', this.tbody);
+  this.addIcons();
   this.events = events(this.el, this);
   this.events.bind('keydown .sortable', 'triggerClick');
   this.events.bind('click .sortable', 'sortCol');
 }
+
+/**
+ * Adds default icon to all sortable headers
+ * to indicate their interactive nature.
+ *
+ * @api private
+ */
+
+SortableGrid.prototype.addIcons = function () {
+  this.headers.forEach(function (th) {
+    var icon = document.createElement('i');
+    icon.className = 'fa fa-sort';
+    th.appendChild(icon);
+  });
+};
 
 /**
  * Trigger a click event on an event target
@@ -62,7 +81,7 @@ SortableGrid.prototype.triggerClick = function (e) {
 
 SortableGrid.prototype.sortCol = function (e) {
   var header = closest(e.target, 'th', true);
-  var order = this.toggleOrder(header);
+  var order = this.toggleHeader(header);
   var sortType = dataset(header, 'sort');
   var index = this.headers.indexOf(header);
   var self = this;
@@ -72,8 +91,8 @@ SortableGrid.prototype.sortCol = function (e) {
     var item = {};
     item.tr = tr;
     var td = qwery('td', tr)[index];
-    // TODO Allow user to configure what part of the cell
-    //      is parsed for sorting.
+    // TODO Allow user to configure what element
+    //      within the cell is parsed for sorting.
     item.val = td.textContent; // IE9+
     items.push(item);
   });
@@ -97,27 +116,26 @@ SortableGrid.prototype.sortCol = function (e) {
   return this;
 
   function compare(a, b) {
-    return (order === 'descending')
+    return (order === ASCENDING)
       ? a.val > b.val
       : a.val < b.val;
   }
 
   function compareNum(a, b) {
-    return (order === 'descending')
+    return (order === ASCENDING)
       ? parseInt(a.val) > parseInt(b.val)
       : parseInt(a.val) < parseInt(b.val);
   }
 
   function compareDate(a, b) {
-    return (order === 'descending')
+    return (order === ASCENDING)
       ? unixTime(a.val) > unixTime(b.val)
       : unixTime(a.val) < unixTime(b.val);
   }
 };
 
 /**
- * Toggles the sorted state of a column header,
- * including the icon which represents the state.
+ * Toggles the sorted state of a column header.
  *
  * Uses the current sorted state to determine
  * the intended state, and returns the new state.
@@ -127,34 +145,40 @@ SortableGrid.prototype.sortCol = function (e) {
  * @api private
  */
 
-SortableGrid.prototype.toggleOrder = function (th) {
-  var state = 'descending';
+SortableGrid.prototype.toggleHeader = function (th) {
+  var state = ASCENDING;
+  var headerClasses = classes(th);
   var icon = qwery('i', th)[0];
-  var iconClasses = classes(icon);
 
-  // No sort -> Descending
-  if (iconClasses.contains('fa-arrows-v')) {
-    iconClasses.remove('fa-arrows-v').add('fa-arrow-down');
-  }
   // Descending -> Ascending
-  else if (iconClasses.contains('fa-arrow-down')) {
-    iconClasses.remove('fa-arrow-down').add('fa-arrow-up');
-    state = 'ascending';
+  if (headerClasses.contains(DESCENDING)) {
+    state = ASCENDING;
+    headerClasses
+    .remove(DESCENDING)
+    .add(ASCENDING);
+    icon.className = 'fa fa-sort-asc';
   }
   // Ascending -> Descending
+  else if (headerClasses.contains(ASCENDING)) {
+    state = DESCENDING;
+    headerClasses
+    .remove(ASCENDING)
+    .add(DESCENDING);
+    icon.className = 'fa fa-sort-desc';
+  }
   else {
-    iconClasses.remove('fa-arrow-up').add('fa-arrow-down');
+    headerClasses.add(ASCENDING);
+    icon.className = 'fa fa-sort-asc';
   }
 
   // Update all other col headers with the neutral sort icon
   this.headers.forEach(function (el) {
     if (el == th) return;
+    classes(el)
+    .remove(ASCENDING)
+    .remove(DESCENDING);
     var icon = qwery('i', el)[0];
-    if (!icon) return;
-    classes(icon)
-    .remove('fa-arrow-up')
-    .remove('fa-arrow-down')
-    .add('fa-arrows-v');
+    icon.className = 'fa fa-sort';
   });
 
   return state;

@@ -1,8 +1,9 @@
 doctype html
 html
   head
-    link(rel='stylesheet' href='styles.css')
     title Sortable Grid Demo
+    link(rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css")
+    link(rel="stylesheet" href="styles.css")
 
   body
     h1 Sortable Grid Demo
@@ -16,31 +17,22 @@ html
           tr
             th.sortable(data-sort="num")
               span Rank
-              i.arrow-combo
             th.sortable
                 span Team
-                i.arrow-combo
             th.sortable(data-sort="num")
                 span Games Played
-                i.arrow-combo
             th.sortable(data-sort="num")
                 span Wins
-                i.arrow-combo
             th.sortable(data-sort="num")
                 span Draws
-                i.arrow-combo
             th.sortable(data-sort="num")
                 span Losses
-                i.arrow-combo
             th.sortable(data-sort="num")
                 span Goals For
-                i.arrow-combo
             th.sortable(data-sort="num")
                 span Goals Against
-                i.arrow-combo
             th.sortable(data-sort="num")
                 span Points
-                i.arrow-combo
           tbody
             tr
               td 1
@@ -96,12 +88,12 @@ html
     script(src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js")
 
     //- Component version
-    script(src="sortable-grid.js")
+    script(src="../sortable-grid.js")
     script.
       var table = document.querySelector('#ex1');
       new SortableGrid(table);
 
     //- jQuery plugin version
-    script(src="sortable-grid.jquery.js")
+    script(src="../sortable-grid.jquery.js")
     script.
       $('#ex2').sortableGrid();
