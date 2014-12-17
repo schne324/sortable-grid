@@ -66,15 +66,15 @@ Requires [nodejs](http://nodejs.org)
 $ git clone https://github.com/schne324/sortable-grid.git
 ```
 
-Then open `demo.html` in your browser.
+Then open `demo/index.html` in your browser.
 
 ## Rebuilding the Plugin
 
 Requires [nodejs](http://nodejs.org)
 
-If you wish to modify the plugin, make your changes to `index.js`. If you wish to modify the demo, make your changes to `demo.jade`.
+If you wish to modify the plugin, make your changes to `src/index.js`. If you wish to modify the demo, make your changes to `demo/index.jade`.
 
-In either case, when you are finished, build by running:
+In either case, when you are finished, rebuild by running:
 
 ```bash
 $ node build
