@@ -77,5 +77,5 @@ If you wish to modify the plugin, make your changes to `src/index.js`. If you wi
 In either case, when you are finished, rebuild by running:
 
 ```bash
-$ node build
+$ npm run build
 ```

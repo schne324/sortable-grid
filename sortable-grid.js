@@ -10,11 +10,10 @@
    * Require `name`.
    *
    * @param {String} name
-   * @param {Boolean} jumped
    * @api public
    */
 
-  function require(name, jumped){
+  function require(name){
     if (cache[name]) return cache[name].exports;
     if (modules[name]) return call(name, require);
     throw new Error('cannot find module "' + name + '"');
@@ -34,14 +33,22 @@
     var mod = modules[id];
     var name = mod[2];
     var fn = mod[0];
+    var threw = true;
 
-    fn.call(m.exports, function(req){
-      var dep = modules[id][1][req];
-      return require(dep ? dep : req);
-    }, m, m.exports, outer, modules, cache, entries);
-
-    // expose as `name`.
-    if (name) cache[name] = cache[id];
+    try {
+      fn.call(m.exports, function(req){
+        var dep = modules[id][1][req];
+        return require(dep || req);
+      }, m, m.exports, outer, modules, cache, entries);
+      threw = false;
+    } finally {
+      if (threw) {
+        delete cache[id];
+      } else if (name) {
+        // expose as 'name'.
+        cache[name] = cache[id];
+      }
+    }
 
     return cache[id].exports;
   }
@@ -545,24 +552,37 @@ exports.unbind = function(el, type, fn, capture){
 
 }, {"closest":3,"event":8}],
 3: [function(require, module, exports) {
+/**
+ * Module Dependencies
+ */
+
 var matches = require('matches-selector')
 
-module.exports = function (element, selector, checkYoSelf, root) {
-  element = checkYoSelf ? {parentNode: element} : element
+/**
+ * Export `closest`
+ */
 
-  root = root || document
+module.exports = closest
 
-  // Make sure `element !== document` and `element != null`
-  // otherwise we get an illegal invocation
-  while ((element = element.parentNode) && element !== document) {
-    if (matches(element, selector))
-      return element
-    // After `matches` on the edge case that
-    // the selector matches the root
-    // (when the root is not the document)
-    if (element === root)
-      return
+/**
+ * Closest
+ *
+ * @param {Element} el
+ * @param {String} selector
+ * @param {Element} scope (optional)
+ */
+
+function closest (el, selector, scope) {
+  scope = scope || document.documentElement;
+
+  // walk up the dom
+  while (el && el !== scope) {
+    if (matches(el, selector)) return el;
+    el = el.parentNode;
   }
+
+  // check scope for match
+  return matches(el, selector) ? el : null;
 }
 
 }, {"matches-selector":10}],
@@ -806,7 +826,8 @@ ClassList.prototype.toggle = function(name, force){
  */
 
 ClassList.prototype.array = function(){
-  var str = this.el.className.replace(/^\s+|\s+$/g, '');
+  var className = this.el.getAttribute('class') || '';
+  var str = className.replace(/^\s+|\s+$/g, '');
   var arr = str.split(re);
   if ('' === arr[0]) arr.shift();
   return arr;
@@ -852,7 +873,7 @@ function toDashed(name) {
 
 var fn;
 
-if (document.head && document.head.dataset) {
+if (typeof document !== "undefined" && document.head && document.head.dataset) {
   fn = {
     set: function(node, attr, value) {
       node.dataset[attr] = value;
